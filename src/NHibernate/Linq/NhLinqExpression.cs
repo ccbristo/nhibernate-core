@@ -27,7 +27,7 @@ namespace NHibernate.Linq
 		private readonly Expression _expression;
 		private readonly IDictionary<ConstantExpression, NamedParameter> _constantToParameterMap;
 
-		public NhLinqExpression(Expression expression, ISessionFactory sessionFactory)
+		public NhLinqExpression(Expression expression, ISessionFactoryImplementor sessionFactory)
 		{
 			_expression = NhPartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees(expression);
 
@@ -55,7 +55,7 @@ namespace NHibernate.Linq
 		{
 			var requiredHqlParameters = new List<NamedParameterDescriptor>();
 			var querySourceNamer = new QuerySourceNamer();
-			var queryModel = NhRelinqQueryParser.Parse(NameUnNamedParameters.Visit(_expression));
+			var queryModel = NhRelinqQueryParser.Parse(_expression);
 			var visitorParameters = new VisitorParameters(sessionFactory, _constantToParameterMap, requiredHqlParameters, querySourceNamer);
 
 			ExpressionToHqlTranslationResults = QueryModelVisitor.GenerateHqlQuery(queryModel, visitorParameters, true);
